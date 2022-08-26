@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drug.dao.DrugDao">
+    <insert id="insertDrug" parameterType="drug">
+        insert into drug(drugid,drugname,approvalnum,company,standardcode)
+            values(null,#{drugname},#{approvalnum},#{company},#{standardcode})
+    </insert>
+
+    <select id="getDrugByDrugname" resultType="drug">
+        select * from drug
+            where drugname=#{drugname}
+    </select>
+
+
+    <select id="getDrugByDrugID" parameterType="int" resultType="drug">
+        select * from drug
+        where drugid=#{drugid}
+    </select>
+
+    <insert id="insertDrugDetails" parameterType="drugDetails">
+        insert into drugdetails(drugid,drugname,ingredients,drugclass,otc,
+                         specifications,drugtype,indication,usageanddosage,
+                         storage,adversereaction,taboo,drugregulatoryclassification,
+                         functionalindications,`character`)
+        values(#{drugid},#{drugname},#{ingredients},#{drugclass},#{otc},
+               #{specifications},#{drugtype},#{indication},#{usageanddosage},
+               #{storage},#{adversereaction},#{taboo},#{drugregulatoryclassification},
+               #{functionalindications},#{character})
+    </insert>
+
+
+    <select id="getDrugDetailsByDrugname" resultType="drugDetails">
+        select * from drugdetails
+            where drugname=#{drugname}
+    </select>
+
+    <delete id="deleteDrug" parameterType="int">
+        delete from drug
+            where drugid=#{drugid}
+    </delete>
+
+    <select id="getDrugidByDrugname" parameterType="string" resultType="int">
+        select drugid from drug
+            where drugname = #{drugname}
+    </select>
+
+    <select id="getAllDrugName" resultType="string">
+        select distinct drugname from drug
+    </select>
+
+    <select id="getByDrugName" resultType="int">
+        select count(*) from drug
+            where drugname = #{drugname}
+    </select>
+
+
+    <select id="getDrugInfo" resultType="drugInfo">
+        select d.drugid,d.drugname,d.approvalnum,d.company,d.standardcode,dt.ingredients,dt.drugclass,dt.otc,
+               dt.specifications,dt.drugtype,dt.indication,dt.usageanddosage,
+               dt.storage,dt.adversereaction,dt.taboo,dt.drugregulatoryclassification,
+               dt.functionalindications,dt.`character` from drug d
+                                                                join drugdetails dt on  d.drugid=dt.drugid
+        where d.drugname=#{drugname}
+    </select>
+
+    <select id="getEnterDrug" resultType="drug">
+        select * from drug
+             limit #{start},#{end}
+    </select>
+    <select id="getEnterDrugDesc" resultType="drug">
+        select * from drug
+        order by drugid desc
+             limit #{start},#{end}
+    </select>
+    <select id="getEnterDrugCount" resultType="int">
+        select count(*) from drug
+    </select>
+
+    <select id="getSearch" resultType="drug" parameterType="pageQuery">
+        select * from drug
+        <where>
+            <if test="drugname!=null">
+                drugname=#{drugname}
+            </if>
+            <if test="standardcode!=null">
+                or  standardcode = #{standardcode}
+            </if>
+        </where>
+        limit #{start},#{end}
+    </select>
+
+    <select id="getSearchDesc" resultType="drug" parameterType="pageQuery">
+        select * from drug
+        <where>
+            <if test="drugname!=null">
+                drugname=#{drugname}
+            </if>
+            <if test="standardcode!=null">
+                or  standardcode = #{standardcode}
+            </if>
+        </where>
+        order by drugid desc
+        limit #{start},#{end}
+    </select>
+
+    <select id="getSearchCount" resultType="int" parameterType="pageQuery">
+        select count(*) from drug
+        <where>
+            <if test="drugname!=null">
+                drugname=#{drugname}
+            </if>
+            <if test="standardcode!=null">
+                or  standardcode = #{standardcode}
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteDrugByDrugid" parameterType="int">
+        delete from drugdetails
+        where drugid=#{drugid}
+    </delete>
+</mapper>

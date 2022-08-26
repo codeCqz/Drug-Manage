@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drug.dao.GetMedicineDao">
+<!--<insert id="insertPickdrug" parameterType="pickdrug">-->
+<!--    insert into pickdrug(id,drugname,handler,jointime,quantity,druguser)-->
+<!--    values(null,#{drugname},#{handler},#{jointime},#{quantity},#{druguser})-->
+<!--</insert>-->
+
+    <select id="getAllGetMedicineCount" resultType="int">
+        select count(*) from pickdrug
+    </select>
+
+    <select id="getAllPickdrug" resultType="pickdrug">
+        select * from pickdrug
+                          limit #{start},#{end}
+    </select>
+
+    <select id="getAllPickdrugDesc" resultType="pickdrug">
+        select * from pickdrug
+        order by id desc
+            limit #{start},#{end}
+    </select>
+
+    <delete id="deletePickdrug">
+        delete from pickdrug where id = #{id}
+    </delete>
+
+
+    <select id="getAllPickdrugByID" resultType="pickdrug">
+        select * from pickdrug
+            where handler = #{handler}
+    </select>
+
+    <select id="getSearch" resultType="pickdrug" parameterType="pageQuery">
+        select * from pickdrug
+        <where>
+            <if test="drugname!=null">
+                drugname=#{drugname}
+            </if>
+            <if test="druguser!=null">
+                or  druguser = #{druguser}
+            </if>
+        </where>
+        limit #{start},#{end}
+    </select>
+
+    <select id="getSearchDesc" resultType="pickdrug" parameterType="pageQuery">
+        select * from pickdrug
+        <where>
+            <if test="drugname!=null">
+                drugname=#{drugname}
+            </if>
+            <if test="druguser!=null">
+                or  druguser = #{druguser}
+            </if>
+        </where>
+        order by id desc
+        limit #{start},#{end}
+    </select>
+    <select id="getSearchCount" resultType="int">
+        select count(*) from pickdrug
+        <where>
+            <if test="drugname!=null">
+                drugname=#{drugname}
+            </if>
+            <if test="druguser!=null">
+                or  druguser = #{druguser}
+            </if>
+        </where>
+    </select>
+</mapper>

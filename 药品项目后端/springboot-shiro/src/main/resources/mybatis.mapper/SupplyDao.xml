@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drug.dao.SupplyDao">
+    <select id="getAllSupplyByUserId" resultType="supply">
+        select * from supply
+        where handler = #{userid}
+              limit #{start},#{end}
+    </select>
+
+    <select id="getAllSupplyByUserIdDesc" resultType="supply">
+        select * from supply
+            where handler = #{userid}
+                order by supplyid desc
+                    limit #{start},#{end}
+    </select>
+
+    <select id="getAllSupply" resultType="supply">
+        select * from supply
+            limit #{start},#{end}
+    </select>
+
+    <select id="getAllSupplyDesc" resultType="supply">
+        select * from supply
+            order by supplyid desc
+                 limit #{start},#{end}
+    </select>
+
+
+    <select id="getAllSupplyCount" resultType="int">
+        select count(*) from supply
+    </select>
+
+    <select id="getAllSupplyCountByid" resultType="int">
+        select count(*) from supply where handler = #{userid}
+    </select>
+
+    <insert id="InsertSupply" parameterType="supply">
+        insert into supply(supplyid,dealerid,dealername,drugid,drugname,quantity,handler,status,jointime,edittime,exp,univalent,TP)
+        values(#{supplyid},#{dealerid},#{dealername},#{drugid},#{drugname},#{quantity},#{handler},#{status},#{jointime},#{edittime},#{exp},#{univalent},#{TP})
+    </insert>
+
+    <update id="updateStatus" parameterType="int">
+        update supply set status=1
+            where supplyid = #{supplyid}
+    </update>
+
+    <update id="setStatus">
+        update supply set status='2'
+            where supplyid = #{supplyid}
+    </update>
+
+    <update id="updateSupply" parameterType="supply">
+        update supply set dealerid=#{dealerid},
+                            dealername=#{dealername},
+                            drugid=#{drugid},
+                            drugname=#{drugname},
+                            quantity=#{quantity},
+                            handler=#{handler},
+                            status=#{status},
+                            edittime =  #{edittime},
+                            exp = #{exp},
+                          univalent = #{univalent},
+                          TP = #{TP}
+            where supplyid = #{supplyid}
+    </update>
+    <delete id="deleteSupply">
+        delete from supply where supplyid = #{supplyid}
+    </delete>
+
+
+    <select id="getBuyerDataClassCount" resultType="int">
+        select count(distinct drugname) from supply;
+    </select>
+
+    <select id="getBuyerDiffDataClassCount" resultType="int">
+        select count(distinct drugname) from supply
+            where jointime=#{jointtime}
+    </select>
+
+    <select id="getBuyerDataToDayNewAdd" resultType="int">
+        select count(distinct supplyid) from supply
+        where jointime=#{jointtime}
+    </select>
+
+    <select id="getBuyerDiffDataDayAdd" resultType="int">
+        select count(distinct supplyid) from supply
+        where jointime=#{jointtime}
+    </select>
+
+    <select id="getAllExpiredSupply" resultType="int">
+        select count(*) from supply
+        where status=2
+    </select>
+
+    <select id="getAllDiffExpiredSupply" resultType="int">
+        select count(*) from supply
+        where status=1 and jointime=#{jointtime}
+    </select>
+
+    <select id="getRadder" resultType="string">
+        select a.dealername from (select dealername,sum(quantity) count from supply group by dealername) as a order by a.count desc  limit 0 ,5 ;
+    </select>
+
+    <select id="getEveryExp" parameterType="string" resultType="int">
+        select count(*) from supply
+        where status=2 and dealername=#{dealername}
+    </select>
+
+    <select id="getEveryDrug" parameterType="string" resultType="supply">
+        select * from supply
+        where status=0 and dealername=#{dealername}
+    </select>
+
+    <select id="getEverySupply" parameterType="string" resultType="int">
+        select count(*) from supply
+        where dealername=#{dealername}
+    </select>
+
+    <select id="getPieDataString" resultType="string">
+        select a.drugname from (select drugname,sum(quantity) count from supply group by drugname) as a order by a.count desc  limit 0 ,5 ;
+    </select>
+
+    <select id="getPieDataQuantity" resultType="supply">
+        select * from supply
+            where status!=2 and drugname=#{drugname}
+    </select>
+
+    <select id="getSupplyById"  resultType="supply">
+        select * from supply
+            where supplyid = #{supplyid}
+    </select>
+
+    <select id="getSearch" resultType="supply" parameterType="pageQuery">
+        select * from supply
+        <where>
+            <if test="drugname!=null">
+                drugname=#{drugname}
+            </if>
+            <if test="dealername!=null">
+                or  dealername = #{dealername}
+            </if>
+        </where>
+        limit #{start},#{end}
+    </select>
+
+    <select id="getSearchDesc" resultType="supply" parameterType="pageQuery">
+        select * from supply
+        <where>
+            <if test="drugname!=null">
+                drugname=#{drugname}
+            </if>
+            <if test="dealername!=null">
+                or  dealername = #{dealername}
+            </if>
+        </where>
+        order by supplyid desc
+        limit #{start},#{end}
+    </select>
+    <select id="getSearchCount" resultType="int" parameterType="pageQuery">
+        select count(*) from supply
+        <where>
+            <if test="drugname!=null">
+                drugname=#{drugname}
+            </if>
+            <if test="dealername!=null">
+                or  dealername = #{dealername}
+            </if>
+        </where>
+    </select>
+
+    <select id="getCount" resultType="supplyCount">
+        select drugname,sum(quantity) count  from supply where  status =0 group by drugname limit 0,10
+    </select>
+
+    <select id="getSupply" resultType="supply">
+        select * from supply order by supplyid desc limit 0,1
+    </select>
+
+    <select id="getSupplyTP" resultType="double">
+        select TP from supply where jointime=#{jointime}
+    </select>
+
+    <select id="getunivalentBydrugnameandexp" resultType="double">
+        select univalent from supply
+            where drugname=#{drugname} and exp=#{exp}
+    </select>
+
+</mapper>

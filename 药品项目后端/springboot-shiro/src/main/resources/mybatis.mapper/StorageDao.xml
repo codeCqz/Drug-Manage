@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drug.dao.StorageDao">
+    <select id="getIsTrue" resultType="int">
+        select count(*) from storage
+            where drugname = #{drugname} and exp = #{exp}
+    </select>
+
+    <insert id="insertStorage" parameterType="storage">
+        insert into storage(drugname,quantity,exp,price,status)
+        values(#{drugname},#{quantity},#{exp},#{price},#{status})
+    </insert>
+    <update id="updateStorage">
+        update storage set quantity=#{quantity}
+            where drugname = #{drugname} and exp=#{exp}
+    </update>
+
+    <select id="getQuantityByDrugnameAndExp" resultType="int">
+        select quantity from storage
+            where drugname = #{drugname} and exp = #{exp}
+    </select>
+
+    <select id="getStorageByDrugname" resultType="storage">
+        select * from storage
+            where  drugname = #{drugname}
+    </select>
+
+    <select id="getAllStorageDrugName" resultType="string">
+        select distinct drugname from storage
+    </select>
+
+    <delete id="deleteStorage" parameterType="storage">
+        delete from storage where drugname = #{drugname} and exp = #{exp}
+    </delete>
+
+    <select id="getAllStorage" parameterType="int" resultType="storage">
+        select * from storage
+            limit #{start},#{end}
+    </select>
+
+    <select id="getAllStorageDesc" parameterType="int" resultType="storage">
+        select * from storage
+            order by storageid desc
+                limit #{start},#{end}
+    </select>
+
+    <select id="getAllStorageCount" resultType="int">
+        select count(*) from storage
+    </select>
+
+    <select id="getSearch" resultType="storage" parameterType="pageQuery">
+        select * from storage
+        <where>
+            <if test="drugname!=null">
+                drugname=#{drugname}
+            </if>
+        </where>
+        limit #{start},#{end}
+    </select>
+
+    <select id="getSearchDesc" resultType="storage" parameterType="pageQuery">
+        select * from storage
+        <where>
+            <if test="drugname!=null">
+                drugname=#{drugname}
+            </if>
+        </where>
+        order by storageid desc
+        limit #{start},#{end}
+    </select>
+    <select id="getSearchCount" resultType="int" parameterType="pageQuery">
+        select count(*) from storage
+        <where>
+            <if test="drugname!=null">
+                drugname=#{drugname}
+            </if>
+        </where>
+    </select>
+
+    <select id="getDrugnameList" resultType="string">
+        select distinct drugname from storage
+    </select>
+
+    <update id="updateStorageInfo" parameterType="storage">
+        update storage set drugname=#{drugname},quantity=#{quantity},exp=#{exp},price=#{price}
+            where storageid = #{storageid}
+    </update>
+
+    <delete id="deleteStorageByID" parameterType="int">
+        delete from storage where storageid = #{storageid}
+    </delete>
+
+    <select id="getAllExpByDrugname" resultType="string">
+        select exp from storage
+                   where drugname = #{drugname}
+    </select>
+
+    <select id="getPriceByDrugname" resultType="double">
+        select price from storage
+                where drugname = #{drugname}
+    </select>
+
+    <update id="updateStotageByExpAndDrugname" parameterType="storage">
+        update storage set quantity=#{quantity}
+        where drugname = #{drugname} and exp=#{exp}
+    </update>
+
+    <select id="getStotageDataClassCount" resultType="int">
+        select count(distinct drugname) from storage;
+    </select>
+
+    <select id="getWillExpiredDrug" resultType="int">
+        select count(*) from storage
+        where status=1
+    </select>
+</mapper>

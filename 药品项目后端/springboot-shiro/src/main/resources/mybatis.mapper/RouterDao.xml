@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drug.dao.RouterDao">
+
+    <select id="getUserRouter" resultType="routermeuninfo">
+        select mi.id,mi.name,mi.path,mi.parentid,mi.ordernum,mi.redirect,mi.component,mi.alwaysShow,mi.hidden,mi.url
+            from menu_info mi
+                join role_menu rm on rm.id = mi.id
+                where rm.roleid=#{roleid} and mi.parentid=0
+    </select>
+
+
+    <select id="getUserMeta" resultType="meta">
+        select mi.id,mi.icon,mi.status,mi.title
+        from menu_info mi
+                 join role_menu rm on rm.id = mi.id
+        where rm.roleid=#{roleid} and mi.parentid=0
+    </select>
+
+
+    <select id="getChildrenRouter" resultType="children">
+        select mi.id,mi.name,mi.path,mi.parentid,mi.ordernum,mi.redirect,mi.component,mi.alwaysShow,mi.hidden,mi.url
+        from menu_info mi
+                 join role_menu rm on rm.id = mi.id
+        where rm.roleid=#{roleid} and mi.parentid!=0
+    </select>
+
+
+    <select id="getChildrenMeta" resultType="meta">
+        select mi.id,mi.icon,mi.status,mi.title
+        from menu_info mi
+                 join role_menu rm on rm.id = mi.id
+        where rm.roleid=#{roleid} and mi.parentid!=0
+    </select>
+</mapper>

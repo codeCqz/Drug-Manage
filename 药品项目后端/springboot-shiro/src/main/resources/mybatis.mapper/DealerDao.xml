@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drug.dao.DealerDao">
+    <select id="getAllDealer" resultType="dealer" parameterType="int">
+        select * from dealer
+            limit #{start},#{end}
+    </select>
+
+    <select id="getAllDealerDesc" resultType="dealer">
+        select * from dealer
+        order by dealerid desc
+        limit #{start},#{end}
+    </select>
+
+
+    <select id="getDeriveDealer" resultType="dealer">
+        select * from dealer
+    </select>
+
+    <select id="getDeriveDealerDesc" resultType="dealer">
+        select * from dealer
+        order by dealerid desc
+    </select>
+
+
+    <update id="editDealer" parameterType="dealer">
+        update dealer set dealername=#{dealername},area=#{area},address=#{address},telephone=#{telephone},contacts=#{contacts},bank=#{bank},account=#{account}
+                where dealerid = #{dealerid}
+    </update>
+
+    <insert id="insertDealer" parameterType="dealer">
+        insert into dealer(dealerid,dealername,area,address,telephone,contacts,bank,account)
+            values(null,#{dealername},#{area},#{address},#{telephone},#{contacts},#{bank},#{account})
+    </insert>
+
+    <delete id="deleteDealer" parameterType="integer">
+        delete from dealer where dealerid=#{dealerid}
+    </delete>
+
+
+    <select id="getAllDealerCount" resultType="integer">
+        select count(*) from dealer
+    </select>
+
+
+
+    <select id="searchByDealer" resultType="dealer" parameterType="pageQuery">
+        select * from dealer
+        <where>
+            <if test="dealerid!=null">
+                dealerid=#{dealerid}
+            </if>
+            <if test="dealername!=null">
+                or  dealername = #{dealername}
+            </if>
+            <if test="area!=null">
+                or  area = #{area}
+            </if>
+        </where>
+        limit #{start},#{end}
+    </select>
+
+
+    <select id="searchByDealerDesc" resultType="dealer" parameterType="pageQuery">
+        select * from dealer
+        <where>
+            <if test="dealerid!=null">
+                dealerid=#{dealerid}
+            </if>
+            <if test="dealername!=null">
+                or dealername = #{dealername}
+            </if>
+            <if test="area!=null">
+                or  area = #{area}
+            </if>
+        </where>
+        order by dealerid desc
+        limit #{start},#{end}
+    </select>
+
+
+    <select id="searchByDealerCount"  parameterType="pageQuery" resultType="integer">
+        select count(*) from dealer
+        <where>
+            <if test="dealerid!=null">
+                dealerid=#{dealerid}
+            </if>
+            <if test="dealername!=null">
+                or  dealername = #{dealername}
+            </if>
+            <if test="area!=null">
+                or  area = #{area}
+            </if>
+        </where>
+    </select>
+
+
+    <insert id="insertManyDealer" parameterType="dealer">
+        insert into dealer(dealerid,dealername,area,address,telephone,contacts,bank,account)
+        values(#{dealerid},#{dealername},#{area},#{address},#{telephone},#{contacts},#{bank},#{account})
+    </insert>
+
+    <select id="getDealerInfo" resultType="dealerInfo">
+        select dealerid,dealername from dealer
+    </select>
+
+    <select id="getDealerByDealername" resultType="int">
+        select dealerid from dealer
+            where dealername = #{dealername}
+    </select>
+</mapper>
