@@ -12,7 +12,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="drug数据" target="8" />
+      <module name="drug数据" target="1.8" />
       <module name="springboot-shiro" target="1.8" />
     </bytecodeTargetLevel>
   </component>

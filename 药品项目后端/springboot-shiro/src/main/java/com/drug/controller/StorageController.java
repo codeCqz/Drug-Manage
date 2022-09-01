@@ -7,6 +7,7 @@ import com.drug.entity.dto.ListQuery;
 import com.drug.entity.dto.PageQuery;
 import com.drug.entity.dto.ReturnMessage;
 import com.drug.entity.pojo.Storage;
+import com.drug.entity.pojo.Supply;
 import com.drug.service.DrugService;
 import com.drug.service.StorageService;
 import org.apache.commons.lang3.StringUtils;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -193,7 +196,7 @@ public class StorageController {
 
 
     @RequestMapping("/getallstock")
-    public ReturnMessage getAllStock(@RequestParam("query")String  listQuery){
+    public ReturnMessage getAllStock(@RequestParam("query")String  listQuery) throws ParseException {
         Map map = new HashMap<>();
 
         JSONObject jsonObject = JSON.parseObject(listQuery);
@@ -222,10 +225,60 @@ public class StorageController {
                 total = storageService.getAllStorageCount();
             }
 
+
+
+        for (Storage storage : allStorage) {
+            Date date = new Date();
+
+            SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+
+            String temp = sdf1.format(date);
+
+
+            Date today = sdf1.parse(temp);
+
+
+            Date expday = sdf1.parse(storage.getExp());
+
+            if(expday.before(today) || expday.equals(today)){
+                storage.setStatus(2);
+            }else if (getMonth(today,expday)>2){
+                storage.setStatus(0);
+            }else{
+                storage.setStatus(1);
+            }
+            storageService.updateStorage(storage);
+        }
+
         map.put("allStorage",allStorage);
         map.put("total",total);
 
         return ReturnMessage.successWithData(map);
     }
 
+    public  int getMonth(Date start, Date end) {
+        if (start.after(end)) {
+            Date t = start;
+            start = end;
+            end = t;
+        }
+        Calendar startCalendar = Calendar.getInstance();
+        startCalendar.setTime(start);
+        Calendar endCalendar = Calendar.getInstance();
+        endCalendar.setTime(end);
+        Calendar temp = Calendar.getInstance();
+        temp.setTime(end);
+        temp.add(Calendar.DATE, 1);
+        int year = endCalendar.get(Calendar.YEAR) - startCalendar.get(Calendar.YEAR);
+        int month = endCalendar.get(Calendar.MONTH) - startCalendar.get(Calendar.MONTH);
+        if ((startCalendar.get(Calendar.DATE) == 1)&& (temp.get(Calendar.DATE) == 1)) {
+            return year * 12 + month + 1;
+        } else if ((startCalendar.get(Calendar.DATE) != 1) && (temp.get(Calendar.DATE) == 1)) {
+            return year * 12 + month;
+        } else if ((startCalendar.get(Calendar.DATE) == 1) && (temp.get(Calendar.DATE) != 1)) {
+            return year * 12 + month;
+        } else {
+            return (year * 12 + month - 1) < 0 ? 0 : (year * 12 + month);
+        }
+    }
 }

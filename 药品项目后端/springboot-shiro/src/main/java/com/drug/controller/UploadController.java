@@ -52,7 +52,7 @@ public class UploadController {
 
 
         //指定上传目录
-        String suffix = "E:\\平常事宜\\毕业论文的材料\\avatar\\";
+        String suffix = "E:\\Project\\avatar\\";
         File targetFile = new File(suffix);
 
 
